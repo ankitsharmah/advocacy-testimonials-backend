@@ -1,6 +1,4 @@
-# JOURNAL.md — Backend Decision Journal
-
-> Honest notes written as work progressed. See root JOURNAL.md for full project context.
+# JOURNAL.md — Backend Journal
 
 ---
 
