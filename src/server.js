@@ -1,0 +1,54 @@
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const morgan = require("morgan");
+const connectDB = require("./utils/db");
+
+const testimonialRoutes = require("./routes/testimonials");
+const widgetRoutes = require("./routes/widget");
+
+const app = express();
+
+// Connect to MongoDB
+connectDB();
+
+// Middleware
+// app.use(morgan("dev"));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "*",
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+  }),
+);
+app.use(express.json({ limit: "10mb" }));
+// app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+
+// Routes
+app.use("/api/testimonials", testimonialRoutes);
+app.use("/api/widget", widgetRoutes);
+
+// Health check
+app.get("/", (req, res) => {
+  res.json({ status: "ok", timestamp: new Date().toISOString() });
+});
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ success: false, message: "Route not found" });
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || "Internal Server Error",
+  });
+});
+
+const PORT = process.env.PORT || 9090;
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
+
+module.exports = app;
