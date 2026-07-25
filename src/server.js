@@ -9,8 +9,25 @@ const widgetRoutes = require("./routes/widget");
 
 const app = express();
 
-// Connect to MongoDB
-connectDB();
+// Connect to MongoDB — lazy, non-blocking, won't crash cold start
+let dbConnected = false;
+const ensureDB = async () => {
+  if (!dbConnected) {
+    await connectDB();
+    dbConnected = true;
+  }
+};
+
+// Middleware to ensure DB before any request
+app.use(async (req, res, next) => {
+  try {
+    await ensureDB();
+    next();
+  } catch (err) {
+    console.error("DB connection failed:", err.message);
+    res.status(503).json({ success: false, message: "Database unavailable" });
+  }
+});
 
 // Middleware
 // app.use(morgan("dev"));
