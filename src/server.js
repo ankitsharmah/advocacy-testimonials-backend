@@ -33,7 +33,7 @@ app.use(async (req, res, next) => {
 // app.use(morgan("dev"));
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "*",
+    origin: "*",
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   }),
 );
