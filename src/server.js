@@ -12,7 +12,7 @@ const app = express();
 // CORS must be first — before everything
 app.use(cors({
   origin: [
-    'https://advocacy-testimonials-frontend.vercel.app',
+    'https://advocacy-testimonials-frontend.vercel.app/',
     'http://localhost:5173',
   ],
   credentials: true,
