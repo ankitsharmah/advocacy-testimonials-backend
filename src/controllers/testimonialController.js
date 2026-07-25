@@ -105,12 +105,16 @@ const getAllTestimonials = async (req, res) => {
 const getApprovedTestimonials = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 9;
+    const limit = parseInt(req.query.limit) || 12;
     const skip = (page - 1) * limit;
+    const sortBy = ["createdAt", "rating"].includes(req.query.sortBy)
+      ? req.query.sortBy
+      : "createdAt";
+    const sortOrder = req.query.sortOrder === "asc" ? 1 : -1;
 
     const [testimonials, total] = await Promise.all([
       Testimonial.find({ status: "approved" })
-        .sort({ createdAt: -1 })
+        .sort({ [sortBy]: sortOrder })
         .skip(skip)
         .limit(limit)
         .select("-email -fingerprint -reviewNote -sentimentScore")
@@ -144,10 +148,10 @@ const updateStatus = async (req, res) => {
     const { id } = req.params;
     const { status, reviewNote } = req.body;
 
-    if (!["approved", "rejected"].includes(status)) {
+    if (!["approved", "rejected", "pending"].includes(status)) {
       return res.status(400).json({
         success: false,
-        message: 'Status must be "approved" or "rejected"',
+        message: 'Status must be "approved", "rejected" or "pending"',
       });
     }
 
