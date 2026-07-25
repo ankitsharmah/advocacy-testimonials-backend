@@ -37,19 +37,16 @@ Review: ${text}
       .replace(/```(?:json)?\n?/gi, "")
       .trim();
     const parsed = JSON.parse(raw);
-console.log(raw)
+    console.log(raw);
     return parsed;
   } catch (err) {
-    console.log(err.message);
-
-    // const { sentiment, score } = analyzeSentiment(text);
-
-    // return {
-    //   sentiment,
-    //   sentimentScore: score,
-    //   tags: [],
-    //   summary: "",
-    // };
+    console.error("AI analysis failed:", err.message);
+    return {
+      sentiment: "neutral",
+      sentimentScore: 0,
+      tags: [],
+      summary: "",
+    };
   }
 };
 
